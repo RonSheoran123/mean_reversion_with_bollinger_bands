@@ -8,9 +8,20 @@ df = yf.download('BDX', start='2019-01-01')
 
 df['shifted'] = df.Close.shift()  # for stop loss 
 
-# moving average over 20 day period
-df['sma'] = df['Close'].rolling(20).mean()
-df['std'] = df['Close'].rolling(20).std()
+# half life
+from sklearn import linear_model
+df_lag = df['Close'].shift(1)
+df_delta = df['Close'] - df_lag
+lin_reg_model = linear_model.LinearRegression()
+df_delta = df_delta.values.reshape(len(df_delta),1)                    
+df_lag = df_lag.values.reshape(len(df_lag),1)
+lin_reg_model.fit(df_lag[1:], df_delta[1:])                           
+half_life = -np.log(2) / lin_reg_model.coef_.item()
+# half-life = 16.227080962345063
+
+# moving average over 19 day period (small multiple of half-life)
+df['sma'] = df['Close'].rolling(19).mean()
+df['std'] = df['Close'].rolling(19).std()
 df['upper_bollinger'] = df['sma'] + (2 * df['std'])
 df['lower_bollinger'] = df['sma'] - (2 * df['std'])
 
