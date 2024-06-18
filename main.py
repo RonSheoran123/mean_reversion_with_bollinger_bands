@@ -41,14 +41,14 @@ buyprices, sellprices= [], []
 
 for index,row in df.iterrows():
     if not position and row.signal == 'buy':
-        buydate.append(index)
-        buyprice.append(row.Open)
+        buydates.append(index)
+        buyprices.append(row.Open)
         position = True
         
     if position:
-        if row.signal == 'sell' or row.shifted < 0.95 * buyprice[-1]:  # stop loss
-            selldate.append(index)
-            sellprice.append(row.Open)
+        if row.signal == 'sell' or row.shifted < 0.95 * buyprices[-1]:  # stop loss
+            selldates.append(index)
+            sellprices.append(row.Open)
             position = False
 
 # plot
