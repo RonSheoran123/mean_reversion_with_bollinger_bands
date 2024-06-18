@@ -40,13 +40,13 @@ buydates, selldates = [], []
 buyprices, sellprices= [], []
 
 for index,row in df.iterrows():
-    if not position and row.signal == 'buy':
+    if not position and row.signal == 'Buy':
         buydates.append(index)
         buyprices.append(row.Open)
         position = True
         
     if position:
-        if row.signal == 'sell' or row.shifted < 0.95 * buyprices[-1]:  # stop loss
+        if row.signal == 'Sell' or row.shifted < 0.95 * buyprices[-1]:  # stop loss
             selldates.append(index)
             sellprices.append(row.Open)
             position = False
@@ -63,4 +63,4 @@ plt.legend()
 plt.show()
 
 # Returns
-returns = (pd.Series([(sell-buy)/buy for sell,buy in zip(sellprice,buyprice)])+1).prod()-1
+returns = (pd.Series([(sell-buy)/buy for sell,buy in zip(sellprices,buyprices)])+1).prod()-1
